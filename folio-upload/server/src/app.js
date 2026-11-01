@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { connectDB } from './config/db.js';
 import { logger } from './middleware/logger.js';
 import { notFound, errorHandler } from './middleware/error.js';
 import authRoutes from './routes/auth.js';
@@ -18,6 +19,13 @@ app.use(express.json({ limit: '100kb' }));
 app.use(logger);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
+
+// Vercel's serverless Express runtime serves this exported app directly;
+// src/index.js is not guaranteed to run. Connect before any DB-backed route.
+app.use((req, res, next) => {
+  connectDB().then(() => next()).catch(next);
+});
+
 app.use('/api', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/projects', projectRoutes);
