@@ -1,11 +1,23 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { api } from '../api/client.js';
+import { api, tokenStore } from '../api/client.js';
 import ContactForm from '../components/ContactForm.jsx';
+import './templates.css';
 
 const LEVELS = { learning: 1, comfortable: 2, strong: 3 };
 const LEVEL_LABEL = { learning: 'Learning', comfortable: 'Comfortable', strong: 'Strong' };
-const THEME_LABEL = { vellum: 'Vellum', blueprint: 'Blueprint' };
+const THEME_LABEL = {
+  vellum: 'Vellum', blueprint: 'Blueprint', minimal: 'Minimal',
+  atelier: 'Atelier', editorial: 'Editorial', terminal: 'Terminal',
+};
+const TEMPLATES = [
+  { id: 'vellum', label: 'Vellum', note: 'Warm technical classic' },
+  { id: 'blueprint', label: 'Blueprint', note: 'Dark architectural' },
+  { id: 'minimal', label: 'Minimal', note: 'Clean and focused' },
+  { id: 'atelier', label: 'Atelier', note: 'Expressive creative' },
+  { id: 'editorial', label: 'Editorial', note: 'Magazine-inspired' },
+  { id: 'terminal', label: 'Terminal', note: 'Developer aesthetic' },
+];
 const LINK_LABEL = { github: 'GitHub', linkedin: 'LinkedIn', twitter: 'Twitter / X', website: 'Website' };
 
 function Level({ level }) {
@@ -22,8 +34,11 @@ export default function Portfolio() {
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(null);
   const [error, setError] = useState('');
+  const [templateBusy, setTemplateBusy] = useState(false);
+  const [templateMessage, setTemplateMessage] = useState('');
 
   const preview = searchParams.get('preview');
+  const canCustomize = Boolean(preview && tokenStore.get());
 
   useEffect(() => {
     let cancelled = false;
@@ -41,6 +56,23 @@ export default function Portfolio() {
     return () => { document.title = 'Folio'; };
   }, [user]);
 
+  async function chooseTemplate(theme) {
+    if (!canCustomize || templateBusy || theme === user.theme) return;
+    const previous = user.theme;
+    setUser((current) => ({ ...current, theme }));
+    setTemplateBusy(true);
+    setTemplateMessage('');
+    try {
+      await api('/profile', { method: 'PUT', body: { theme } });
+      setTemplateMessage(`${THEME_LABEL[theme]} is now your saved template.`);
+    } catch (err) {
+      setUser((current) => ({ ...current, theme: previous }));
+      setTemplateMessage(err.message || 'Could not save this template.');
+    } finally {
+      setTemplateBusy(false);
+    }
+  }
+
   if (error === 'notfound') {
     return (
       <main className="auth">
@@ -57,7 +89,24 @@ export default function Portfolio() {
   const empty = user.projects.length === 0 && user.skills.length === 0;
 
   return (
-    <div className="page" data-theme={user.theme}>
+    <div className="page" data-theme={user.theme || 'vellum'}>
+      {canCustomize && (
+        <aside className="cv-template-bar" aria-label="CV template selector">
+          <div className="cv-template-bar-head">
+            <div><strong>CV preview</strong><span>Switch the look without changing your profile content.</span></div>
+            <Link to="/dashboard/profile">Back to editor</Link>
+          </div>
+          <div className="cv-template-options">
+            {TEMPLATES.map((t) => (
+              <button key={t.id} type="button" className={`cv-template-chip ${user.theme === t.id ? 'active' : ''}`}
+                onClick={() => chooseTemplate(t.id)} disabled={templateBusy}>
+                <span>{t.label}</span><small>{t.note}</small>
+              </button>
+            ))}
+          </div>
+          <p className="cv-template-status" role="status">{templateBusy ? 'Saving template…' : templateMessage || 'Choose any template to apply it to your public portfolio too.'}</p>
+        </aside>
+      )}
       <article className="sheet">
         <header className="sheet-head">
           {user.avatarUrl && <img className="avatar" src={user.avatarUrl} alt="" />}
@@ -72,9 +121,7 @@ export default function Portfolio() {
               </nav>
             )}
           </div>
-          <button type="button" className="btn download-cv-btn" onClick={() => window.print()}>
-            Download CV
-          </button>
+          <button type="button" className="btn download-cv-btn" onClick={() => window.print()}>Download CV</button>
         </header>
 
         {user.bio && <section><p className="prose">{user.bio}</p></section>}
@@ -127,7 +174,7 @@ export default function Portfolio() {
             {user.headline && <tr><th>Role</th><td>{user.headline}</td></tr>}
             {user.location && <tr><th>Based in</th><td>{user.location}</td></tr>}
             <tr><th>Views</th><td>{user.views}</td></tr>
-            <tr><th>Look</th><td>{THEME_LABEL[user.theme]}</td></tr>
+            <tr><th>Look</th><td>{THEME_LABEL[user.theme] || 'Vellum'}</td></tr>
             <tr><th>On Folio</th><td>Since {since}</td></tr>
           </tbody>
         </table>
