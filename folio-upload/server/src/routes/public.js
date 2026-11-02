@@ -71,41 +71,10 @@ router.get('/folios/:slug', asyncHandler(async (req, res) => {
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const { q, skill, sort } = req.query;
-    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 10));
-
-    const filter = {};
-
-    if (q && String(q).trim()) {
-      const escaped = escapeRegex(String(q).trim());
-      const regex = new RegExp(escaped, 'i');
-      filter.$or = [{ name: regex }, { username: regex }];
-    }
-
-    if (skill && String(skill).trim()) {
-      const escapedSkill = escapeRegex(String(skill).trim());
-      const matchingSkills = await Skill.find({
-        name: new RegExp(escapedSkill, 'i'),
-      }).select('user');
-      const userIds = matchingSkills.map((s) => s.user);
-      filter._id = { $in: userIds };
-    }
-
-    const sortOption = sort === 'views' ? { views: -1, createdAt: -1 } : { createdAt: -1 };
-
-    const total = await User.countDocuments(filter);
-    const pages = Math.max(1, Math.ceil(total / limit));
-    const skip = (page - 1) * limit;
-
-    const users = await User.find(filter)
-      .select('-email')
-      .sort(sortOption)
-      .skip(skip)
-      .limit(limit)
-      .populate({ path: 'skills', options: { sort: { createdAt: 1 } } });
-
-    res.json({ users, page, pages, total });
+    const folios = await Folio.find({ visibility: 'public' }).sort({ createdAt: -1 }).limit(50)
+      .populate({ path: 'user', select: 'name username headline avatarUrl' })
+      .populate({ path: 'skills', select: 'name level' });
+    res.json({ folios, total: folios.length, page: 1, pages: 1 });
   })
 );
 
