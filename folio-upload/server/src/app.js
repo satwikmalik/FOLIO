@@ -5,6 +5,7 @@ import { logger } from './middleware/logger.js';
 import { notFound, errorHandler } from './middleware/error.js';
 import authRoutes from './routes/auth.js';
 import profileRoutes from './routes/profile.js';
+import folioRoutes from './routes/folios.js';
 import projectRoutes from './routes/projects.js';
 import skillRoutes from './routes/skills.js';
 import messageRoutes from './routes/messages.js';
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 
 app.use('/api', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/folios', folioRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/messages', messageRoutes);

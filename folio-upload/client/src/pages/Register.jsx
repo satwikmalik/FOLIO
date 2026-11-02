@@ -19,7 +19,7 @@ export default function Register() {
     setBusy(true);
     try {
       await register(form.username, form.email, form.password);
-      navigate('/dashboard/profile', { replace: true });
+      navigate('/dashboard/folios', { replace: true });
     } catch (err) {
       setError(err.message);
       setBusy(false);
