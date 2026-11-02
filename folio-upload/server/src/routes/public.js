@@ -2,6 +2,7 @@ import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import { User } from '../models/User.js';
+import { Folio } from '../models/Folio.js';
 import '../models/Project.js';
 import { Skill } from '../models/Skill.js';
 import { Message } from '../models/Message.js';
