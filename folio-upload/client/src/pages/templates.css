@@ -1,0 +1,89 @@
+/* Additional Folio portfolio templates. The existing Vellum and Blueprint styles remain the defaults. */
+.profile-head-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.template-help { width: 100%; margin: -2px 0 10px; font-size: 14px; }
+.template-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; }
+.template-opt { position: relative; display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--soft); cursor: pointer; }
+.template-opt.selected { border: 2px solid var(--accent); padding: 9px; background: var(--fill); }
+.template-opt input { position: absolute; opacity: 0; pointer-events: none; }
+.template-swatch { height: 76px; display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 10px; border: 1px solid currentColor; overflow: hidden; }
+.template-swatch i { display: block; width: 76%; height: 3px; background: currentColor; opacity: .8; }
+.template-swatch i:nth-child(2) { width: 48%; opacity: .45; }
+.template-swatch i:nth-child(3) { width: 90%; height: 1px; opacity: .35; }
+.template-swatch b { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+.template-swatch-terminal { font-family: monospace; }
+.template-copy { display: grid; gap: 3px; }
+.template-copy strong { font-size: 15px; }
+.template-copy small { color: var(--muted); font-size: 12px; }
+.template-selected { position: absolute; top: 5px; right: 7px; color: var(--accent); font-size: 11px; }
+.cv-template-bar { max-width: 980px; margin: 0 auto 18px; padding: 16px; color: var(--ink); background: var(--paper); border: 1px solid var(--ink); }
+.cv-template-bar-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.cv-template-bar-head div { display: grid; gap: 2px; }
+.cv-template-bar-head strong { font-size: 17px; }
+.cv-template-bar-head span, .cv-template-status { color: var(--muted); font-size: 13px; }
+.cv-template-options { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.cv-template-chip { display: grid; gap: 4px; padding: 9px; text-align: left; font: inherit; color: var(--ink); background: transparent; border: 1px solid var(--soft); cursor: pointer; }
+.cv-template-chip.active { border: 2px solid var(--accent); padding: 8px; background: var(--fill); }
+.cv-template-chip span { font-weight: 600; }
+.cv-template-chip small { color: var(--muted); font-size: 11px; }
+.cv-template-chip:disabled { opacity: .6; cursor: wait; }
+.cv-template-status { min-height: 18px; margin: 10px 0 0; }
+
+[data-theme='minimal'] {
+  --page: #eceff1; --paper: #fff; --ink: #202124; --muted: #626970;
+  --soft: #d9dde1; --fill: #f4f5f6; --grid: transparent; --accent: #2563eb;
+  --ui: Inter, 'Helvetica Neue', Arial, sans-serif; --prose: Georgia, serif;
+}
+.page[data-theme='minimal'] { background-image: none; }
+[data-theme='minimal'] .sheet { border: 0; box-shadow: 0 12px 44px rgba(20,30,40,.08); }
+[data-theme='minimal'] .sheet-head { border-bottom: 2px solid var(--ink); }
+[data-theme='minimal'] .sheet h2 { color: var(--ink); text-transform: uppercase; letter-spacing: .12em; font-size: 12px; }
+[data-theme='minimal'] .avatar { border-radius: 50%; }
+
+[data-theme='atelier'] {
+  --page: #e8d8c7; --paper: #f6eee4; --ink: #382b24; --muted: #806b5d;
+  --soft: #d9c5b1; --fill: #eee1d3; --grid: rgba(56,43,36,.07); --accent: #b54b32;
+  --ui: 'Trebuchet MS', Arial, sans-serif; --prose: Georgia, serif;
+}
+[data-theme='atelier'] .sheet { border: 0; border-radius: 2px; box-shadow: 8px 8px 0 rgba(56,43,36,.14); }
+[data-theme='atelier'] .sheet-head h1 { font-family: Georgia, serif; font-size: 42px; letter-spacing: -.04em; }
+[data-theme='atelier'] .avatar { width: 88px; height: 88px; border-radius: 50%; }
+[data-theme='atelier'] .sheet h2 { color: var(--accent); text-transform: uppercase; letter-spacing: .14em; }
+
+[data-theme='editorial'] {
+  --page: #e7e1d7; --paper: #f5f0e8; --ink: #29251f; --muted: #756d62;
+  --soft: #d8cfc1; --fill: #eee7dc; --grid: transparent; --accent: #8a3d35;
+  --ui: 'Times New Roman', Georgia, serif; --prose: Georgia, serif;
+}
+.page[data-theme='editorial'] { background-image: none; }
+[data-theme='editorial'] .sheet { max-width: 860px; border: 0; border-top: 5px solid var(--ink); }
+[data-theme='editorial'] .sheet-head { padding: 26px 0; }
+[data-theme='editorial'] .sheet-head h1 { font-size: 44px; letter-spacing: -.04em; }
+[data-theme='editorial'] .headline { font-style: italic; }
+[data-theme='editorial'] .sheet h2 { color: var(--accent); font-family: Arial, sans-serif; text-transform: uppercase; letter-spacing: .16em; font-size: 11px; }
+[data-theme='editorial'] .avatar { width: 82px; height: 100px; }
+
+[data-theme='terminal'] {
+  --page: #080d0a; --paper: #101713; --ink: #b8f7c2; --muted: #7aa889;
+  --soft: #294334; --fill: #17251c; --grid: rgba(184,247,194,.06); --accent: #8bffad;
+  --ui: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; --prose: 'SFMono-Regular', Consolas, monospace;
+}
+[data-theme='terminal'] .sheet { border-color: #477557; box-shadow: 0 0 32px rgba(74,255,133,.07); }
+[data-theme='terminal'] .sheet-head h1::before { content: '> '; color: var(--accent); }
+[data-theme='terminal'] .sheet h2 { color: var(--accent); text-transform: lowercase; }
+[data-theme='terminal'] .sheet h2::before { content: '## '; }
+[data-theme='terminal'] .btn { border-color: var(--accent); }
+[data-theme='terminal'] .btn.primary { color: #101713; background: var(--accent); }
+
+@media (max-width: 720px) {
+  .template-grid { grid-template-columns: 1fr; }
+  .cv-template-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cv-template-bar-head { align-items: flex-start; }
+}
+@media print {
+  .cv-template-bar, .profile-head-actions { display: none !important; }
+  [data-theme='terminal'], [data-theme='atelier'], [data-theme='editorial'], [data-theme='minimal'] {
+    --page: #fff; --paper: #fff; --ink: #1c2b39; --muted: #586873;
+    --soft: #c3cfd0; --fill: #f0f4f2; --accent: #1f5fbf;
+  }
+  [data-theme='terminal'] .sheet { box-shadow: none !important; }
+}

@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
     links: { github: url, linkedin: url, twitter: url, website: url },
     theme: {
       type: String,
-      enum: { values: ['vellum', 'blueprint'], message: 'Unknown theme.' },
+      enum: { values: ['vellum', 'blueprint', 'minimal', 'atelier', 'editorial', 'terminal'], message: 'Unknown template.' },
       default: 'vellum',
     },
     views: { type: Number, default: 0 },
