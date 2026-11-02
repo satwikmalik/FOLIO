@@ -9,6 +9,7 @@ const folioSchema = new mongoose.Schema({
   },
   description: { type: String, trim: true, maxlength: 240, default: '' },
   visibility: { type: String, enum: ['public', 'private'], default: 'private', index: true },
+  views: { type: Number, default: 0 },
   theme: {
     type: String,
     enum: ['vellum', 'blueprint', 'minimal', 'atelier', 'editorial', 'terminal'],
