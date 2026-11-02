@@ -8,6 +8,8 @@ export default function DashboardLayout() {
       <aside className="rail">
         <div className="brand">Folio</div>
         <nav>
+          <NavLink to="folios">My Folios</NavLink>
+          <a href="/explore">Explore</a>
           <NavLink to="profile">Profile</NavLink>
           <NavLink to="projects"><span>Projects</span><span className="muted-count">{stats.projects}</span></NavLink>
           <NavLink to="skills"><span>Skills</span><span className="muted-count">{stats.skills}</span></NavLink>
@@ -18,7 +20,7 @@ export default function DashboardLayout() {
           <NavLink to="account">Account</NavLink>
         </nav>
         <div className="rail-foot">
-          <a href={`/u/${user.username}?preview=1`} target="_blank" rel="noreferrer">View your page</a>
+          <a href="/dashboard/folios" target="_blank" rel="noreferrer">View your page</a>
           <span className="muted">{user.views} {user.views === 1 ? 'view' : 'views'}</span>
           <button className="link" onClick={logout}>Log out</button>
         </div>
