@@ -4,9 +4,13 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import Field from '../../components/Field.jsx';
 import Notice from '../../components/Notice.jsx';
 
-const THEMES = [
-  { id: 'vellum', label: 'Vellum', note: 'Light', bg: '#f0f4f2', ink: '#1c2b39' },
-  { id: 'blueprint', label: 'Blueprint', note: 'Dark', bg: '#0f2e4d', ink: '#e6f0fa' },
+const TEMPLATES = [
+  { id: 'vellum', label: 'Vellum', note: 'Warm, technical classic', bg: '#f0f4f2', ink: '#1c2b39', style: 'Classic' },
+  { id: 'blueprint', label: 'Blueprint', note: 'Dark, architectural', bg: '#0f2e4d', ink: '#e6f0fa', style: 'Dark' },
+  { id: 'minimal', label: 'Minimal', note: 'Clean, quiet and focused', bg: '#ffffff', ink: '#202124', style: 'Clean' },
+  { id: 'atelier', label: 'Atelier', note: 'Expressive creative portfolio', bg: '#f6eee4', ink: '#382b24', style: 'Creative' },
+  { id: 'editorial', label: 'Editorial', note: 'Refined, magazine-inspired', bg: '#f5f0e8', ink: '#29251f', style: 'Elegant' },
+  { id: 'terminal', label: 'Terminal', note: 'Developer / monospace look', bg: '#101713', ink: '#b8f7c2', style: 'Developer' },
 ];
 
 export default function ProfileEditor() {
@@ -50,7 +54,10 @@ export default function ProfileEditor() {
     <>
       <div className="page-head">
         <h1>Profile</h1>
-        <a href={`/u/${user.username}`} target="_blank" rel="noreferrer">/u/{user.username}</a>
+        <div className="profile-head-actions">
+          <a href={`/u/${user.username}?preview=1`} target="_blank" rel="noreferrer" className="btn">View CV</a>
+          <a href={`/u/${user.username}`} target="_blank" rel="noreferrer">Public page ↗</a>
+        </div>
       </div>
 
       <Notice type={status.type || 'info'}>{status.text}</Notice>
@@ -71,20 +78,25 @@ export default function ProfileEditor() {
           <Field label="Website" value={form.links.website} onChange={setLink('website')} placeholder="https://" />
         </div>
 
-        <fieldset className="themes">
-          <legend className="field-label">Look of your public page</legend>
-          {THEMES.map((t) => (
-            <label key={t.id} className="theme-opt">
-              <input type="radio" name="theme" value={t.id} checked={form.theme === t.id} onChange={set('theme')} />
-              <span className="swatch" style={{ background: t.bg, borderColor: t.ink }}>
-                <i style={{ background: t.ink }} />
-              </span>
-              <span>{t.label} <span className="muted">({t.note})</span></span>
-            </label>
-          ))}
+        <fieldset className="themes template-picker">
+          <legend className="field-label">Portfolio template</legend>
+          <p className="muted template-help">Choose a look for your public portfolio and CV. Your profile content stays the same.</p>
+          <div className="template-grid">
+            {TEMPLATES.map((t) => (
+              <label key={t.id} className={`template-opt ${form.theme === t.id ? 'selected' : ''}`}>
+                <input type="radio" name="theme" value={t.id} checked={form.theme === t.id} onChange={set('theme')} />
+                <span className={`template-swatch template-swatch-${t.id}`} style={{ background: t.bg, color: t.ink }}>
+                  <i /><i /><i />
+                  <b>{t.style}</b>
+                </span>
+                <span className="template-copy"><strong>{t.label}</strong><small>{t.note}</small></span>
+                {form.theme === t.id && <span className="template-selected">Selected</span>}
+              </label>
+            ))}
+          </div>
         </fieldset>
 
-        <button className="btn primary" disabled={busy}>{busy ? 'Saving…' : 'Save profile'}</button>
+        <button className="btn primary" disabled={busy}>{busy ? 'Saving…' : 'Save profile & template'}</button>
       </form>
     </>
   );
