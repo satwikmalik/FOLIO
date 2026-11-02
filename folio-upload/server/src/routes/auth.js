@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
+import { Folio } from '../models/Folio.js';
 import { requireFields } from '../middleware/validate.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
@@ -17,6 +18,7 @@ router.post(
 
     const passwordHash = await bcrypt.hash(String(password), 10);
     const user = await User.create({ username, email, passwordHash, name: username });
+    await Folio.create({ user: user._id, title: `${username}'s Portfolio`, slug: String(username).toLowerCase(), visibility: 'private', theme: 'vellum' });
     res.status(201).json({ token: signToken(user._id), user });
   })
 );
