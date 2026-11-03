@@ -27,6 +27,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/u/:username" element={<Portfolio />} />
         <Route path="/f/:slug" element={<FolioPage />} />
+        <Route path="/demo/:slug" element={<FolioPage />} />
 
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
           <Route index element={<Navigate to="/explore" replace />} />
