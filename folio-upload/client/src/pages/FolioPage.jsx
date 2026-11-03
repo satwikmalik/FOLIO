@@ -1,25 +1,30 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import { api } from '../api/client.js';
 import './templates.css';
+import { demoFolios } from '../data/demoFolios.js';
 
 const LABELS = { vellum:'Vellum', blueprint:'Blueprint', minimal:'Minimal', atelier:'Atelier', editorial:'Editorial', terminal:'Terminal' };
 export default function FolioPage() {
   const { slug } = useParams();
+  const isDemo = useLocation().pathname.startsWith('/demo/');
+  const demo = isDemo ? demoFolios.find(f => f.slug === slug) : null;
   const [folio, setFolio] = useState(null);
   const [error, setError] = useState('');
   useEffect(() => {
     let active = true;
     setFolio(null); setError('');
+    if (isDemo) { setFolio(demo || null); if (!demo) setError('Demo not found.'); return () => { active = false; }; }
     api(`/public/folios/${slug}`).then((data) => { if (active) setFolio(data.folio); })
       .catch((err) => { if (active) setError(err.status === 404 ? 'This Folio is private or does not exist.' : err.message); });
     return () => { active = false; };
-  }, [slug]);
+  }, [slug, isDemo]);
   if (error) return <main className="auth"><h1>Folio unavailable</h1><p className="muted">{error}</p><Link to="/explore">Explore public Folios</Link></main>;
   if (!folio) return <main className="auth"><p className="muted">Loading Folio…</p></main>;
   const owner = folio.user || {};
   const links = Object.entries(owner.links || {}).filter(([, url]) => url);
   return <div className="page" data-theme={folio.theme || 'vellum'}>
+    {isDemo && <div style={{maxWidth:980,margin:'0 auto 16px',fontFamily:'Arial,sans-serif',color:'#1c2b39',display:'flex',justifyContent:'space-between',gap:12}}><strong>Fictional demo · {LABELS[folio.theme]} template</strong><Link to="/explore">← Explore</Link></div>}
     <article className="sheet">
       <header className="sheet-head">
         {owner.avatarUrl && <img className="avatar" src={owner.avatarUrl} alt="" />}
