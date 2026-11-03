@@ -29,7 +29,7 @@ export default function App() {
         <Route path="/f/:slug" element={<FolioPage />} />
 
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-          <Route index element={<Navigate to="profile" replace />} />
+          <Route index element={<Navigate to="/explore" replace />} />
           <Route path="folios" element={<FoliosManager />} />
           <Route path="folios/:id" element={<FolioEditor />} />
           <Route path="profile" element={<ProfileEditor />} />
