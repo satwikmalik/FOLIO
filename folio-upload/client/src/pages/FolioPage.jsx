@@ -3,10 +3,13 @@ import { Link, useParams, useLocation } from 'react-router-dom';
 import { api } from '../api/client.js';
 import './templates.css';
 import { demoFolios } from '../data/demoFolios.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const LABELS = { vellum:'Vellum', blueprint:'Blueprint', minimal:'Minimal', atelier:'Atelier', editorial:'Editorial', terminal:'Terminal' };
 export default function FolioPage() {
   const { slug } = useParams();
+  const { user } = useAuth();
+  const [editorOpen, setEditorOpen] = useState(true);
   const isDemo = useLocation().pathname.startsWith('/demo/');
   const demo = isDemo ? demoFolios.find(f => f.slug === slug) : null;
   const [folio, setFolio] = useState(null);
@@ -23,8 +26,10 @@ export default function FolioPage() {
   if (!folio) return <main className="auth"><p className="muted">Loading Folio…</p></main>;
   const owner = folio.user || {};
   const links = Object.entries(owner.links || {}).filter(([, url]) => url);
+  const isOwner = !isDemo && user && (String(user._id) === String(owner._id) || user.username === owner.username);
   return <div className="page" data-theme={folio.theme || 'vellum'}>
     {isDemo && <div style={{maxWidth:980,margin:'0 auto 16px',fontFamily:'Arial,sans-serif',color:'#1c2b39',display:'flex',justifyContent:'space-between',gap:12}}><strong>Fictional demo · {LABELS[folio.theme]} template</strong><Link to="/explore">← Explore</Link></div>}
+    {isOwner && <><button type="button" className="btn" onClick={() => setEditorOpen(v => !v)} style={{position:'fixed',top:16,left:16,zIndex:12,background:'#f0f4f2',color:'#1c2b39',borderColor:'#1c2b39'}} aria-label={editorOpen ? 'Hide editing sidebar' : 'Show editing sidebar'}>◫</button>{editorOpen && <aside style={{position:'fixed',top:0,left:0,bottom:0,width:228,zIndex:11,background:'#f0f4f2',color:'#1c2b39',borderRight:'1px solid #c3cfd0',padding:'68px 18px 20px',boxShadow:'3px 0 16px #0001',fontFamily:'Arial,sans-serif',overflowY:'auto'}}><h2 style={{fontSize:20,marginBottom:8}}>Edit your Folio</h2><p style={{fontSize:13,color:'#586873',marginBottom:20}}>Manage the template and content shown on this page.</p><nav style={{display:'grid',gap:12}}><Link to={'/dashboard/folios/'+folio._id}>Change template ↗</Link><Link to={'/dashboard/folios/'+folio._id}>Edit displayed projects & skills ↗</Link><Link to="/dashboard/profile">Edit profile details ↗</Link><Link to="/dashboard/projects">Manage projects ↗</Link><Link to="/dashboard/skills">Manage skills ↗</Link><Link to="/dashboard/folios">My Folios ↗</Link></nav></aside>}</>}
     <article className="sheet">
       <header className="sheet-head">
         {owner.avatarUrl && <img className="avatar" src={owner.avatarUrl} alt="" />}
