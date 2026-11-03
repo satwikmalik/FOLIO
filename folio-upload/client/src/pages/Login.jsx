@@ -20,7 +20,7 @@ export default function Login() {
     setBusy(true);
     try {
       await login(form.email, form.password);
-      navigate(location.state?.from || '/dashboard/folios', { replace: true });
+      navigate(location.state?.from || '/explore', { replace: true });
     } catch (err) {
       setError(err.message);
       setBusy(false);
